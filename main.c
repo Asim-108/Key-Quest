@@ -14,6 +14,8 @@
 #define PIXEL_BUF_CTRL_BASE   0xFF203020
 #define CHAR_BUF_CTRL_BASE    0xFF203030
 
+#define PS2_BASE 0XFF200100	
+
 /* VGA colors */
 #define WHITE 0xFFFF
 #define YELLOW 0xFFE0
@@ -59,7 +61,9 @@ void plot_pixel(int x, int y, short int line_color);
 void drawLine(int x0, int y0, int x1, int y1, int colour);
 void clear_screen();
 void swap (int *a, int *b);
+
 void setRandKeys(int num, int array[]);
+int map(int val);
 
 void wait_for_vsync() {
 	volatile int* pixel_ctrl_ptr = (int *)0xFF203020; //pixel controller
@@ -121,9 +125,29 @@ int main(void)
     //start of program
     int level = 1
     bool failed = false;
+	bool pressed = false;
 	int* keys[20];
+
+	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
+	int PS2_data, RVALID;
+
 	//starting screen
-	//press any key to start
+	//promt user to press any key to start
+	while(pressed = false){
+		RVALID = (PS2_data & 0x8000);	// extract the RVALID field
+		if (RVALID != 0)
+		{
+			/* always save the last three bytes received */
+			byte1 = byte2;
+			byte2 = byte3;
+			byte3 = PS2_data & 0xFF;
+		}
+		if(byte3 != 0){
+			//key pressed
+			pressed = true;
+		}
+
+	}
 
     while(true){
 		//level screen
@@ -199,12 +223,29 @@ int main(void)
 }
 
 // code for subroutines (not shown)
-void setRandKeys(int num, int array[]){
+void setRandKeys(int num, int *array){
 	srand(time(NULL));
 	for(int i = 0 ; i < num; i++){
 		array[i] = rand() % 26 + 1;
 	}
 	return;
+}
+
+int map(int val){
+	//array to map all PS2 inputs to letter codes, A is 1 and Z is 26
+	int mapArray[] = {28, 50, 33, 35, 36, 43, 52, 51, 67, 59, 66, 75, 
+	58, 49, 68, 77, 21, 45, 27, 44, 60, 42, 29, 34, 53, 26};
+
+	int size = sizeof(mapArray) / sizeof(int);
+
+	for(int i = 0; i < size; i++){
+		if(val == mapArray[i]){
+			//if value is in map array, return number associated with PS2 input code
+			return i + 1;
+		}
+	}
+	//no value found in map, unexpected input
+	return -1;
 }
 
 void erase(int posx[], int posy[]){
