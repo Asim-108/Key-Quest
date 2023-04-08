@@ -62,7 +62,7 @@ void drawLine(int x0, int y0, int x1, int y1, int colour);
 void clear_screen();
 void swap (int *a, int *b);
 
-void setRandKeys(int num, int array[]);
+void setRandKeys(int num, int *array);
 int map(int val);
 
 void wait_for_vsync() {
