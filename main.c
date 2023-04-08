@@ -127,6 +127,8 @@ int main(void)
     bool failed = false;
 	bool pressed = false;
 	int* keys[20];
+	unsigned char byte2 = 0;
+	unsigned char byte3 = 0;
 
 	volatile int * PS2_ptr = (int *) 0xFF200100;  // PS/2 port address
 	int PS2_data, RVALID;
@@ -134,11 +136,11 @@ int main(void)
 	//starting screen
 	//promt user to press any key to start
 	while(pressed = false){
+		PS2_data = *(PS2_ptr);
 		RVALID = (PS2_data & 0x8000);	// extract the RVALID field
 		if (RVALID != 0)
 		{
-			/* always save the last three bytes received */
-			byte1 = byte2;
+			/* always save the last 2 bytes received */
 			byte2 = byte3;
 			byte3 = PS2_data & 0xFF;
 		}
@@ -159,12 +161,28 @@ int main(void)
 		int counter = 1;
 
 		while(!levelDone && !failed){
-			//read key input
-			//check key input to match array
-			//if matches
+			//read key input//
+			PS2_data = *(PS2_ptr);
+			RVALID = (PS2_data & 0x8000);	// extract the RVALID field//
+			if (RVALID != 0)
+			{
+				/* always save the last 2 bytes received *///
+				byte2 = byte3;
+				byte3 = PS2_data & 0xFF;
+			}
+
+			if(byte3 == 240){
+				continue;
+			}
+
+
+			//check key input to match array//
+			if(map(byte3) == keys[counter]){
 				//display check mark
-			//else
-				//failed = true
+			}
+			else{
+				failed = true;
+			}
 			
 			if(counter = level){
 				levelDone = true;
