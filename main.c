@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 
 // Begin part3.c code for Lab 7
@@ -58,7 +59,7 @@ void plot_pixel(int x, int y, short int line_color);
 void drawLine(int x0, int y0, int x1, int y1, int colour);
 void clear_screen();
 void swap (int *a, int *b);
-int* setRandKeys(level);
+void setRandKeys(int num, int array[]);
 bool levelPassed(keys, level);
 
 void wait_for_vsync() {
@@ -121,11 +122,13 @@ int main(void)
     //start of program
     int level = 1
     bool failed = false;
+	int* keys[20];
+	//starting screen
+	//press any key to start
     while(true){
         //print key sequence
-        int* keys = setRandKeys(level);
+        setRandKeys(level, keys);
         //print keys to display
-
 
         if(levelPassed(keys, level) == false){
             //failed screen
@@ -174,8 +177,12 @@ int main(void)
 }
 
 // code for subroutines (not shown)
-setRandKeys(int num){
-    //return pointer to array of random numbers, length of num
+void setRandKeys(int num, int array[]){
+	srand(time(NULL));
+	for(int i = 0 ; i < num; i++){
+		array[i] = rand() % 26 + 1;
+	}
+	return;
 }
 
 bool levelPassed(keys, level){
