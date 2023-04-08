@@ -60,7 +60,6 @@ void drawLine(int x0, int y0, int x1, int y1, int colour);
 void clear_screen();
 void swap (int *a, int *b);
 void setRandKeys(int num, int array[]);
-bool levelPassed(keys, level);
 
 void wait_for_vsync() {
 	volatile int* pixel_ctrl_ptr = (int *)0xFF203020; //pixel controller
@@ -125,20 +124,43 @@ int main(void)
 	int* keys[20];
 	//starting screen
 	//press any key to start
+
     while(true){
-        //print key sequence
+		//level screen
         setRandKeys(level, keys);
         //print keys to display
 
-        if(levelPassed(keys, level) == false){
-            //failed screen
-            level = 1;
-            continue;
-        }
-        else{
-            //level passed screen
-            level += 1;
-        }
+		bool levelDone = false;
+		bool failed = false;
+		int counter = 1;
+
+		while(!levelDone && !failed){
+			//read key input
+			//check key input to match array
+			//if matches
+				//display check mark
+			//else
+				//failed = true
+			
+			if(counter = level){
+				levelDone = true;
+			}
+			else{
+				counter++;
+			}
+		}
+
+		if(failed){
+			//fail screen
+			level = 1;
+			continue;
+		}
+		else{
+			//pass screen
+			level++;
+			continue;
+		}
+
     }
 
     
@@ -183,10 +205,6 @@ void setRandKeys(int num, int array[]){
 		array[i] = rand() % 26 + 1;
 	}
 	return;
-}
-
-bool levelPassed(keys, level){
-    //read key inputs from user
 }
 
 void erase(int posx[], int posy[]){
@@ -287,7 +305,7 @@ void clear_screen() {
 		for (int j=0; j<240; j++) {
 			plot_pixel(i, j, 0x0000);
 		}
-	}	
+	}
 }
 
 void swap (int *a, int *b)
