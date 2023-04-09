@@ -53,12 +53,6 @@
 volatile int pixel_buffer_start; // global variable
 
 void wait_for_vsync();
-void erase(int posx[], int posy[]);
-void drawBox(int xpos, int ypos, int colour);
-void drawPattern(int posx[], int posy[], int colour[]);
-void update(int posx[], int posy[], int dx[], int dy[]);
-void plot_pixel(int x, int y, short int line_color);
-void drawLine(int x0, int y0, int x1, int y1, int colour);
 void clear_screen();
 void swap (int *a, int *b);
 
@@ -80,33 +74,6 @@ void wait_for_vsync() {
 int main(void)
 {
     volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
-    // // declare other variables(not shown)
-	// int dx_box[NUM_BOXES], dy_box[NUM_BOXES], c_box[NUM_BOXES], posx_box[NUM_BOXES], posy_box[NUM_BOXES];
-	// int prevx[NUM_BOXES], prevy[NUM_BOXES];
-	// int pprevx[NUM_BOXES], pprevy[NUM_BOXES];
-	
-	// int colours[] = {WHITE, YELLOW, RED, GREEN, BLUE, CYAN, MAGENTA, GREY, PINK, ORANGE};
-    // // initialize location and direction of rectangles(not shown)
-	
-	// for(int i = 0; i < NUM_BOXES; i++){
-	// 	dx_box[i] = rand() % 2 * 2 - 1;
-	// 	dy_box[i] = rand() % 2 * 2 - 1;
-	// 	c_box[i] = colours[rand() % 10];
-	// 	posx_box[i] = rand() % 317;
-	// 	posy_box[i] = rand() % 237;
-	// }
-	
-	// for(int i = 0; i < NUM_BOXES; i++){
-	// 	prevx[i] = posx_box[i];
-	// 	prevy[i] = posy_box[i];
-	// }
-	
-	// for(int i = 0; i < NUM_BOXES; i++){
-	// 	pprevx[i] = posx_box[i];
-	// 	pprevy[i] = posy_box[i];
-	// }
-
-
 
     /* set front pixel buffer to start of FPGA On-chip memory */
     *(pixel_ctrl_ptr + 1) = 0xC8000000; // first store the address in the 
@@ -208,39 +175,6 @@ int main(void)
 		}
 
     }
-
-    
-    // while (1)
-    // {
-        
-		
-	// 	/* Erase any boxes and lines that were drawn in the last iteration */
-	// 	//erase(posx_box, posy_box);
-	// 	//clear_screen();
-		
-	// 	erase(pprevx, pprevy);
-
-    //     // code for drawing the boxes and lines (not shown)
-	// 	drawPattern(posx_box, posy_box, c_box);
-    //     // code for updating the locations of boxes (not shown)
-		
-	// 	for(int i = 0; i < NUM_BOXES; i++){
-	// 		pprevx[i] = prevx[i];
-	// 		pprevy[i] = prevy[i];
-	// 	}
-		
-	// 	for (int i = 0; i < NUM_BOXES; i++){
-	// 		prevx[i] = posx_box[i];
-	// 		prevy[i] = posy_box[i];
-	// 	}
-		
-	// 	update(posx_box, posy_box, dx_box, dy_box);	
-		
-	// 	//*(pixel_ctrl_ptr) = pixel_buffer_start;
-		
-	// 	wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-	// 	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-    // }
 	
 }
 
@@ -268,99 +202,6 @@ int map(int val){
 	}
 	//no value found in map, unexpected input
 	return -1;
-}
-
-void erase(int posx[], int posy[]){
-	for(int i = 0; i < NUM_BOXES; i++){
-		drawBox(posx[i], posy[i], 0x0000);
-		drawLine(posx[i], posy[i], posx[(i+1)%NUM_BOXES], posy[(i+1)%NUM_BOXES], 0x0000);
-	}
-}
-
-void drawBox(int xpos, int ypos, int colour){
-	
-	for (int i = 0; i < BOX_LEN; i++){
-		for(int j = 0; j < BOX_LEN; j++){
-			plot_pixel(xpos + i, ypos + j, colour);
-		}
-	}
-}
-
-void drawPattern(int posx[], int posy[], int colour[]){
-	for(int i = 0; i < NUM_BOXES; i++){
-		drawBox(posx[i], posy[i], colour[i]);
-		drawLine(posx[i], posy[i], posx[(i+1)%NUM_BOXES], posy[(i+1)%NUM_BOXES], colour[i]);
-	}
-}
-
-void update(int posx[], int posy[], int dx[], int dy[]){
-	for(int i = 0; i < NUM_BOXES; i++){
-		posx[i] += dx[i];
-		posy[i] += dy[i];
-		
-		if(posx[i] == 0 && dx[i] == -1){
-			dx[i] = 1;
-		}
-		else if(posx[i] == 318 && dx[i] == 1){
-			dx[i] = -1;
-		}
-		
-		if(posy[i] == 0 && dy[i] == -1){
-			dy[i] = 1;
-		}
-		else if(posy[i] == 238 && dy[i] == 1){
-			dy[i] = -1;
-		}
-	}
-}
-
-
-
-void plot_pixel(int x, int y, short int line_color)
-{
-    *(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = line_color;
-}
-
-void drawLine(int x0, int y0, int x1, int y1, int colour)
-{
-	bool is_steep = ABS(y1 - y0) > ABS(x1 - x0);
-		if (is_steep) {
-			swap(&x0, &y0);
-			swap(&x1, &y1);
-		}
-		if (x0 > x1) {
-			swap(&x0, &x1);
-			swap(&y0, &y1);
-		}		
-
-	int deltax = x1 - x0;
-	int deltay = y1 - y0;
-	if (deltay <0) 
-        deltay = -deltay;
-	
-	int error = -(deltax / 2);
-	int y = y0;
-		for (int x=x0; x < x1; x++){
-			if (is_steep == true){
-				plot_pixel(y, x, colour);
-			}
-			else {
-				plot_pixel(x, y, colour);
-			}
-			error = error + deltay;
-			if (error >= 0) {
-				int y_step=0;
-				if (y0 < y1) {
-					y_step =1;
-				}
-				else {
-					y_step = -1;
-				}
-				y = y + y_step;
-				error = error - deltax;
-			}
-		
-		}
 }
 
 void clear_screen() {
