@@ -206,38 +206,38 @@ int main(void)
     }
 
     
-
-    while (1)
-    {
+    // while (1)
+    // {
         
 		
-		/* Erase any boxes and lines that were drawn in the last iteration */
-		//erase(posx_box, posy_box);
-		//clear_screen();
+	// 	/* Erase any boxes and lines that were drawn in the last iteration */
+	// 	//erase(posx_box, posy_box);
+	// 	//clear_screen();
 		
-		erase(pprevx, pprevy);
+	// 	erase(pprevx, pprevy);
 
-        // code for drawing the boxes and lines (not shown)
-		drawPattern(posx_box, posy_box, c_box);
-        // code for updating the locations of boxes (not shown)
+    //     // code for drawing the boxes and lines (not shown)
+	// 	drawPattern(posx_box, posy_box, c_box);
+    //     // code for updating the locations of boxes (not shown)
 		
-		for(int i = 0; i < NUM_BOXES; i++){
-			pprevx[i] = prevx[i];
-			pprevy[i] = prevy[i];
-		}
+	// 	for(int i = 0; i < NUM_BOXES; i++){
+	// 		pprevx[i] = prevx[i];
+	// 		pprevy[i] = prevy[i];
+	// 	}
 		
-		for (int i = 0; i < NUM_BOXES; i++){
-			prevx[i] = posx_box[i];
-			prevy[i] = posy_box[i];
-		}
+	// 	for (int i = 0; i < NUM_BOXES; i++){
+	// 		prevx[i] = posx_box[i];
+	// 		prevy[i] = posy_box[i];
+	// 	}
 		
-		update(posx_box, posy_box, dx_box, dy_box);	
+	// 	update(posx_box, posy_box, dx_box, dy_box);	
 		
-		//*(pixel_ctrl_ptr) = pixel_buffer_start;
+	// 	//*(pixel_ctrl_ptr) = pixel_buffer_start;
 		
-		wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-		pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-    }
+	// 	wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+	// 	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+    // }
+	
 }
 
 // code for subroutines (not shown)
