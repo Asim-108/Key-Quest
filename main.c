@@ -630,10 +630,11 @@ int main(void)
 	}
 	wait_for_vsync(); // swap front and back buffers on VGA vertical sync
 	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+	printf("starting display\n");
 
 
 	//promt user to press any key to start
-	while(pressed = false){
+	while(pressed == false){
 		PS2_data = *(PS2_ptr);
 		RVALID = (PS2_data & 0x8000);	// extract the RVALID field
 		if (RVALID != 0)
@@ -646,11 +647,25 @@ int main(void)
 			//key pressed
 			pressed = true;
 		}
+		printf("%d\n", byte3);
 
 	}
 
     while(true){
 		//level screen
+
+		int index = 0;
+		for(int y = 0; y < RESOLUTION_Y; y++){
+			for(int x = 0; x < RESOLUTION_X; x++){
+				plot_pixel(x, y, start_screen[index]);
+				index++;
+			}
+		}
+
+		wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+		pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+
+
         setRandKeys(level, keys);
         //print keys to display
 
