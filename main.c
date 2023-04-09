@@ -684,7 +684,7 @@ int main(void)
 				byte3 = PS2_data & 0xFF;
 			}
 
-			if(byte3 == 240){
+			if(byte2 == 240){
 				continue;
 			}
 
