@@ -193,7 +193,7 @@ int main(void)
 		}
 
 		if(failed){
-			//fail screen
+			//fail/game over screen
 			level = 1;
 			continue;
 		}
@@ -201,6 +201,10 @@ int main(void)
 			//pass screen
 			level++;
 			continue;
+		}
+
+		if(level > 20){
+			//win screen
 		}
 
     }
