@@ -3738,7 +3738,7 @@ int main(void)
 void setRandKeys(int num, int *array){
 	srand(time(NULL));
 	for(int i = 0 ; i < num; i++){
-		array[i] = rand() % 26 + 1;
+		array[i] = rand() % 26;
 	}
 	return;
 }
