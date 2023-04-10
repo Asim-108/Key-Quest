@@ -15,6 +15,7 @@
 #define CHAR_BUF_CTRL_BASE    0xFF203030
 
 #define PS2_BASE 0XFF200100	
+#define HEX_BASE 0XFF200020
 
 /* VGA colors */
 #define WHITE 0xFFFF
@@ -3447,6 +3448,7 @@ void plot_pixel(int x, int y, short int line_color);
 
 void setRandKeys(int num, int *array);
 int map(int val);
+int hexNum(int num);
 
 void wait_for_vsync() {
 	volatile int* pixel_ctrl_ptr = (int *)0xFF203020; //pixel controller
@@ -3499,6 +3501,8 @@ int main(void)
   pixel_buffer_start = *(pixel_ctrl_ptr + 1); // we draw on the back buffer
   clear_screen(); // pixel_buffer_start points to the pixel buffer
 
+  volatile int * hex_ptr = (int* )0XFF200020;
+
   //start of program
   int level = 1;
   bool failed = false;
@@ -3550,6 +3554,8 @@ int main(void)
 				index++;
 			}
 		}
+
+    *(hex_ptr) = hexNum(level);
 
     //drawing level number
     index = 0;
@@ -3735,7 +3741,7 @@ int main(void)
         //loop
       }
 		}
-    
+
   }
 }
 
@@ -3768,4 +3774,45 @@ int map(int val){
 	}
 	//no value found in map, unexpected input
 	return -1;
+}
+
+int hexNum(int num){
+  int displayVal;
+  switch(num){
+    case 1:
+      displayVal = 6;
+      break;
+    case 2:
+      displayVal = 91;
+      break;
+    case 3:
+      displayVal = 79;
+      break;
+    case 4:
+      displayVal = 102;
+      break;
+    case 5:
+      displayVal = 109;
+      break;
+    case 6:
+      displayVal = 125;
+      break;
+    case 7:
+      displayVal = 7;
+      break;
+    case 8:
+      displayVal = 127;
+      break;
+    case 9:
+      displayVal = 103;
+      break;
+    case 10:
+      displayVal = 1599;
+      break;
+    default:
+      displayVal = 0;
+      break;
+  }
+
+  return displayVal;
 }
