@@ -3629,9 +3629,6 @@ int main(void)
 				continue;
 			}
 
-			//check key input to match array//
-      printf("%d, %d\n", map(byte3), keys[counter - 1]);
-
 			if(map(byte3) == keys[counter - 1]){
         //plot checkmark
         index = 0;
