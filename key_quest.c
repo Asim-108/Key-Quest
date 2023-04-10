@@ -39,7 +39,7 @@
 #define BOX_LEN 2
 #define NUM_BOXES 8
 
-#define DELAY_CONST 6000000
+#define DELAY_CONST 2000000000
 
 #define FALSE 0
 #define TRUE 1
