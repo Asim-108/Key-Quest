@@ -3698,20 +3698,25 @@ int main(void)
 
 		}
 		else{
-      clear_screen();
-      index = 0;
-      for(int y = 0; y < RESOLUTION_Y; y++){
-        for(int x = 0; x < RESOLUTION_X; x++){
-          plot_pixel(x, y, level_up[index]);
-          index++;
-        }
-		  }
-      wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-		  pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-      for(int i = 0; i < DELAY_CONST; i++){
-          continue;
+      if(level == 10){
+        level++;
       }
-			level++;
+      else{
+        clear_screen();
+        index = 0;
+        for(int y = 0; y < RESOLUTION_Y; y++){
+          for(int x = 0; x < RESOLUTION_X; x++){
+            plot_pixel(x, y, level_up[index]);
+            index++;
+          }
+        }
+        wait_for_vsync(); // swap front and back buffers on VGA vertical sync
+        pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+        for(int i = 0; i < DELAY_CONST; i++){
+            continue;
+        }
+        level++;
+      }
 		}
 
 		if(level > 10){
@@ -3725,7 +3730,7 @@ int main(void)
 		  }
       wait_for_vsync(); // swap front and back buffers on VGA vertical sync
 		  pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-      //infinite loop, end program here
+      //infinite loop, idle program here
       while(1){
         //loop
       }
@@ -3738,7 +3743,12 @@ int main(void)
 void setRandKeys(int num, int *array){
 	srand(time(NULL));
 	for(int i = 0 ; i < num; i++){
-		array[i] = rand() % 26;
+    array[i] = rand() % 26;
+    if(i > 0){
+      while(array[i] == array[i - 1]){
+        array[i] = rand() % 26;
+      }
+    }
 	}
 	return;
 }
