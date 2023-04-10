@@ -369,7 +369,7 @@ void setRandKeys(int num, int *array){
 }
 
 int map(int val){
-	//array to map all PS2 inputs to letter codes, A is 1 and Z is 26
+	//array to map all PS2 inputs to letter codes, A is 0 and Z is 25
 	int mapArray[] = {28, 50, 33, 35, 36, 43, 52, 51, 67, 59, 66, 75, 
 	58, 49, 68, 77, 21, 45, 27, 44, 60, 42, 29, 34, 53, 26};
 
